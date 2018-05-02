@@ -28,7 +28,6 @@ public class PrincipalActivity extends AppCompatActivity {
                 IntentIntegrator scanIntegrator = new IntentIntegrator(PrincipalActivity.this);
                 scanIntegrator.setPrompt("Scan");
                 scanIntegrator.setBeepEnabled(false);
-                //The following line if you want QR code
                 scanIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
                 scanIntegrator.setCaptureActivity(CaptureActivity.class);
                 scanIntegrator.setOrientationLocked(true);
@@ -42,12 +41,10 @@ public class PrincipalActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         TextView consoleLog = findViewById(R.id.log_operacoes);
-        String scanContent = "";
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanningResult != null && scanningResult.getContents() != null) {
-                scanContent = scanningResult.getContents().toString();
-
-                consoleLog.append(scanContent + "\n");
+            String scanContent = scanningResult.getContents().toString();
+            consoleLog.append(scanContent + "\n");
         }else{
             consoleLog.append("NOOP\n");
         }
