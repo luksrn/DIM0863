@@ -50,17 +50,21 @@ public class PrincipalActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         final TextView consoleLog = findViewById(R.id.log_operacoes);
-        String scanContent = "";
+        String idChaveiro = "";
+        String username = "";
 
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanningResult != null && scanningResult.getContents() != null) {
-            scanContent = scanningResult.getContents();
-            consoleLog.append("QRCode com Chaveiro = " +scanContent + "\n");
+            idChaveiro = scanningResult.getContents();
+            consoleLog.append("QRCode com Chaveiro = " + idChaveiro + "\n");
+
+            Session session = new Session(PrincipalActivity.this);
+            username = session.getusename();
 
             JSONObject requestJSON = new JSONObject();
             try {
-                requestJSON.put("login", "lukesrn");
-                requestJSON.put("chaveiro", scanContent);
+                requestJSON.put("login", username);
+                requestJSON.put("chaveiro", idChaveiro);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

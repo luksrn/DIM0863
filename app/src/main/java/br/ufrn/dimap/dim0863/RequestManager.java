@@ -20,7 +20,7 @@ public class RequestManager {
     private ImageLoader mImageLoader;
     private static Context mCtx;
 
-    public static final String WEBSERVICE_ENDPOINT = "http://192.168.0.13:8080";
+    public static final String WEBSERVICE_ENDPOINT = "http://192.168.1.100:8080";
     public static final String CHAVEIRO_ENDPOINT = RequestManager.WEBSERVICE_ENDPOINT + "/api/v1/chaveiro";
 
     private RequestManager(Context context) {
