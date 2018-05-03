@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import br.ufrn.mobile.japi.JApiWebView;
+
 public class LoginActivity extends AppCompatActivity {
 
     @Override
@@ -15,10 +17,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_main);
 
-        Button botaoLogin = findViewById(R.id.botao_logar);
-        final EditText etUsername = findViewById(R.id.login_username);
+        JApiWebView japiWebView = (JApiWebView) findViewById(R.id.japiwebview);
+        japiWebView.loadJapiWebView("https://autenticacao.info.ufrn.br", "dim086320181-id", "segredo", this, PrincipalActivity.class);
 
-        botaoLogin.setOnClickListener(new View.OnClickListener() {
+       /* botaoLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String username = etUsername.getText().toString();
@@ -29,6 +31,6 @@ public class LoginActivity extends AppCompatActivity {
                 Intent principal = new Intent(LoginActivity.this, PrincipalActivity.class);
                 LoginActivity.this.startActivity(principal);
             }
-        });
+        });*/
     }
 }
