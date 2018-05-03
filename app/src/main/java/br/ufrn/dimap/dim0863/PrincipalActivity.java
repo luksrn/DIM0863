@@ -9,9 +9,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.journeyapps.barcodescanner.CaptureActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class PrincipalActivity extends AppCompatActivity {
 
@@ -41,14 +48,41 @@ public class PrincipalActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         TextView consoleLog = findViewById(R.id.log_operacoes);
         String scanContent = "";
+
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanningResult != null && scanningResult.getContents() != null) {
-                scanContent = scanningResult.getContents().toString();
+            scanContent = scanningResult.getContents();
+            consoleLog.append(scanContent + "\n");
 
-                consoleLog.append(scanContent + "\n");
-        }else{
+            JSONObject requestJSON = new JSONObject();
+            try {
+                requestJSON.put("login", "USUARIO_LOGADO");
+                requestJSON.put("chaveiro", scanContent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                    (Request.Method.GET, RequestManager.CHAVEIRO_ENDPOINT, requestJSON, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Toast.makeText(PrincipalActivity.this, "Response: " + response.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO: Handle error
+
+                        }
+                    });
+
+            RequestManager.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        } else {
             consoleLog.append("NOOP\n");
         }
     }
