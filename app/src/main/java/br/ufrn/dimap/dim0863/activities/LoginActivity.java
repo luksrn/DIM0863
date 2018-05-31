@@ -1,4 +1,4 @@
-package br.ufrn.dimap.dim0863;
+package br.ufrn.dimap.dim0863.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import br.ufrn.dimap.dim0863.R;
+import br.ufrn.dimap.dim0863.Session;
 
 public class LoginActivity extends AppCompatActivity {
 

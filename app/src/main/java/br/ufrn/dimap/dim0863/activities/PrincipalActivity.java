@@ -1,4 +1,4 @@
-package br.ufrn.dimap.dim0863;
+package br.ufrn.dimap.dim0863.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +19,10 @@ import com.journeyapps.barcodescanner.CaptureActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import br.ufrn.dimap.dim0863.R;
+import br.ufrn.dimap.dim0863.RequestManager;
+import br.ufrn.dimap.dim0863.Session;
 
 public class PrincipalActivity extends AppCompatActivity {
 
