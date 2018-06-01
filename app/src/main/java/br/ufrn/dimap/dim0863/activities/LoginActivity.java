@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import br.ufrn.dimap.dim0863.R;
-import br.ufrn.dimap.dim0863.Session;
+import br.ufrn.dimap.dim0863.util.Session;
 
 public class LoginActivity extends AppCompatActivity {
 

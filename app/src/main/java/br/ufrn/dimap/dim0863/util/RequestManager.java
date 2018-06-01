@@ -1,4 +1,4 @@
-package br.ufrn.dimap.dim0863;
+package br.ufrn.dimap.dim0863.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +22,7 @@ public class RequestManager {
 
     public static final String WEBSERVICE_ENDPOINT = "http://192.168.1.100:8080";
     public static final String CHAVEIRO_ENDPOINT = RequestManager.WEBSERVICE_ENDPOINT + "/api/v1/chaveiro";
+    public static final String LOCALIZACAO_ENDPOINT = RequestManager.WEBSERVICE_ENDPOINT + "/api/v1/localizacao";
 
     private RequestManager(Context context) {
         mCtx = context;
@@ -51,7 +52,7 @@ public class RequestManager {
         return instance;
     }
 
-    public RequestQueue getRequestQueue() {
+    private RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.

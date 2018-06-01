@@ -3,6 +3,8 @@
     package="br.ufrn.dimap.dim0863">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -28,6 +30,7 @@
 
                 </intent-filter>
         </activity>
+        <service android:name=".services.LocationService" android:process=":location_service" />
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package br.ufrn.dimap.dim0863;
+package br.ufrn.dimap.dim0863.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
