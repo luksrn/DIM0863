@@ -2,14 +2,14 @@ package br.ufrn.dimap.dim0863.activities;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,28 +32,25 @@ import br.ufrn.dimap.dim0863.util.RequestManager;
 import br.ufrn.dimap.dim0863.util.Session;
 import br.ufrn.dimap.dim0863.services.LocationService;
 
-public class PrincipalActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private boolean locationPermission;
-    private SharedPreferences preferences;
-    private SharedPreferences.Editor preferencesEditor;
     private static final int REQUEST_PERMISSIONS = 100;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.principal_main);
+        setContentView(R.layout.activity_main);
 
-        Button botaoLerQRCode = findViewById(R.id.ler_qrcode_button);
+        Button btnReadQRCode = findViewById(R.id.btn_read_qrcode);
 
-        botaoLerQRCode.setOnClickListener(new View.OnClickListener() {
+        btnReadQRCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IntentIntegrator scanIntegrator = new IntentIntegrator(PrincipalActivity.this);
+                IntentIntegrator scanIntegrator = new IntentIntegrator(MainActivity.this);
                 scanIntegrator.setPrompt("Scan");
                 scanIntegrator.setBeepEnabled(false);
-                //The following line if you want QR code
-                scanIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                scanIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);  //If you want QR code
                 scanIntegrator.setCaptureActivity(CaptureActivity.class);
                 scanIntegrator.setOrientationLocked(true);
                 scanIntegrator.setBarcodeImageEnabled(true);
@@ -61,31 +58,32 @@ public class PrincipalActivity extends AppCompatActivity {
             }
         });
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        preferencesEditor = preferences.edit();
+        Button btnConfigBluetooth = findViewById(R.id.btn_config_bluetooth);
+        btnConfigBluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
+                startActivity(intent);
+            }
+        });
 
-        requestPermissions();
+
+        requestLocationPermissions();
 
         if (locationPermission) {
-//            if (preferences.getString("service", "").matches("")) {
-//                preferencesEditor.putString("service", "service").apply();
-
-                Intent intent = new Intent(getApplicationContext(), LocationService.class);
-                startService(intent);
-//            } else {
-//                Toast.makeText(getApplicationContext(), "Location service is already running", Toast.LENGTH_SHORT).show();
-//            }
+            Intent intent = new Intent(getApplicationContext(), LocationService.class);
+            startService(intent);
         } else {
-            Toast.makeText(getApplicationContext(), "Please enable the gps", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Por favor, habilite o GPS", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void requestPermissions() {
+    private void requestLocationPermissions() {
         if ((ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                 || (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
-            if (!(ActivityCompat.shouldShowRequestPermissionRationale(PrincipalActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION))
-                    && !(ActivityCompat.shouldShowRequestPermissionRationale(PrincipalActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION))) {
-                ActivityCompat.requestPermissions(PrincipalActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSIONS);
+            if (!(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION))
+                    && !(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION))) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSIONS);
             }
         } else {
             locationPermission = true;
@@ -93,7 +91,7 @@ public class PrincipalActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         switch (requestCode) {
@@ -102,7 +100,7 @@ public class PrincipalActivity extends AppCompatActivity {
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     locationPermission = true;
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please allow the permission",
+                    Toast.makeText(getApplicationContext(), "Por favor, aceite as permissões solicitadas",
                             Toast.LENGTH_LONG).show();
                 }
             }
@@ -122,7 +120,7 @@ public class PrincipalActivity extends AppCompatActivity {
             idChaveiro = scanningResult.getContents();
             consoleLog.append("QRCode com Chaveiro = " + idChaveiro + "\n");
 
-            Session session = new Session(PrincipalActivity.this);
+            Session session = new Session(MainActivity.this);
             username = session.getusename();
 
             JSONObject requestJSON = new JSONObject();
@@ -133,8 +131,7 @@ public class PrincipalActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                    (Request.Method.POST, RequestManager.CHAVEIRO_ENDPOINT, requestJSON, new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, RequestManager.CHAVEIRO_ENDPOINT, requestJSON, new Response.Listener<JSONObject>() {
 
                         @Override
                         public void onResponse(JSONObject response) {

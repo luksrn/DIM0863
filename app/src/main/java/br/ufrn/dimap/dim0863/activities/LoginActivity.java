@@ -16,7 +16,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_main);
+        setContentView(R.layout.activity_login);
 
         Button botaoLogin = findViewById(R.id.botao_logar);
         final EditText etUsername = findViewById(R.id.login_username);
@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
                 Session session = new Session(LoginActivity.this);
                 session.setusename(username);
 
-                Intent principal = new Intent(LoginActivity.this, PrincipalActivity.class);
+                Intent principal = new Intent(LoginActivity.this, MainActivity.class);
                 LoginActivity.this.startActivity(principal);
             }
         });
