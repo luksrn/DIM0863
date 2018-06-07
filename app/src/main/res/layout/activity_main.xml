@@ -9,14 +9,22 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/ler_qrcode_button"
+            android:id="@+id/btn_read_qrcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ler QRCode" />
+            android:text="@string/btn_read_qrcode" />
+
+        <Button
+            android:id="@+id/btn_config_bluetooth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_config_bluetooth" />
 
         <TextView
             android:id="@+id/log_operacoes"
             android:layout_width="match_parent"
             android:layout_height="467dp" />
+
     </LinearLayout>
+
 </LinearLayout>

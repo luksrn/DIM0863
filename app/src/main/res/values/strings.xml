@@ -6,4 +6,11 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+
+    <string name="btn_enable_disable_bt">Habilitar/Desabilitar Bluetooth</string>
+    <string name="btn_find_bt_devices">Localizar Dispositivos</string>
+    <string name="config_bluetooth">Configurar Bluetooth</string>
+
+    <string name="btn_read_qrcode">Ler QRCode</string>
+    <string name="btn_config_bluetooth">Configurar Bluetooth</string>
 </resources>
