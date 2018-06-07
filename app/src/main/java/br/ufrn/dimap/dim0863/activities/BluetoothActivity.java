@@ -24,7 +24,7 @@ public class BluetoothActivity extends AppCompatActivity {
     private final BroadcastReceiver broadcastReceiverBluetoothState = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            // When discovery finds a device
+
             if (action != null && action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
 
@@ -53,18 +53,63 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     };
 
+    private final BroadcastReceiver broadcastReceiverBluetoothScanMode = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (action != null && action.equals(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED)) {
+                final int mode = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, BluetoothAdapter.ERROR);
+
+                switch (mode) {
+                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
+                        Toast.makeText(BluetoothActivity.this, "Descoberta habilitada",
+                                Toast.LENGTH_LONG).show();
+                        break;
+
+                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE:
+                        Toast.makeText(BluetoothActivity.this, "Descoberta desabilitada. Apto para receber conexões",
+                                Toast.LENGTH_LONG).show();
+                        break;
+
+                    case BluetoothAdapter.SCAN_MODE_NONE:
+                        Toast.makeText(BluetoothActivity.this, "Descoberta desabilitada. Não é possível receber conexões",
+                                Toast.LENGTH_LONG).show();
+                        break;
+
+                    case BluetoothAdapter.STATE_CONNECTING:
+                        Toast.makeText(BluetoothActivity.this, "Conectando...",
+                                Toast.LENGTH_LONG).show();
+                        break;
+
+                    case BluetoothAdapter.STATE_CONNECTED:
+                        Toast.makeText(BluetoothActivity.this, "Conectado",
+                                Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+        }
+    };
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
 
         Button btnEnableDisableBluetooth = findViewById(R.id.btn_enable_disable_bluetooth);
+        Button btnEnableDisableDiscovery = findViewById(R.id.btn_enable_disable_discovery);
         Button btnFindBluetoothDevices = findViewById(R.id.btn_find_bluetooth_devices);
 
         btnEnableDisableBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 BluetoothActivity.this.enableDisableBluetooth();
+            }
+        });
+
+        btnEnableDisableDiscovery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BluetoothActivity.this.enableDisableDiscovery();
             }
         });
 
@@ -101,6 +146,15 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     }
 
+    private void enableDisableDiscovery() {
+        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        startActivity(discoverableIntent);
+
+        IntentFilter discoveryIntent = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+        registerReceiver(broadcastReceiverBluetoothScanMode, discoveryIntent);
+    }
+
     private void findBluetoothDevices() {
 
     }
@@ -114,10 +168,6 @@ public class BluetoothActivity extends AppCompatActivity {
                 Toast.makeText(this, "Não foi possível habilitar o Bluetooth.",
                         Toast.LENGTH_LONG).show();
             }
-//            else { // resultCode == RESULT_OK
-//                Toast.makeText(this, "Bluetooth habilitado.",
-//                        Toast.LENGTH_LONG).show();
-//            }
         }
     }
 }

@@ -15,6 +15,12 @@
             android:text="@string/btn_enable_disable_bt" />
 
         <Button
+            android:id="@+id/btn_enable_disable_discovery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_enable_disable_discovery" />
+
+        <Button
             android:id="@+id/btn_find_bluetooth_devices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
