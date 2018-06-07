@@ -27,10 +27,9 @@
             android:text="@string/btn_find_bt_devices" />
 
         <ListView
+            android:id="@+id/lv_new_devices"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </ListView>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
