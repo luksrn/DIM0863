@@ -3,6 +3,7 @@ package br.ufrn.dimap.dim0863.activities;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +12,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -20,9 +23,10 @@ import java.util.ArrayList;
 
 import br.ufrn.dimap.dim0863.R;
 import br.ufrn.dimap.dim0863.adapter.DeviceListAdapter;
+import br.ufrn.dimap.dim0863.util.BluetoothConnectionThread;
 
 
-public class BluetoothActivity extends AppCompatActivity {
+public class BluetoothActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private static final int REQUEST_ENABLE_BT = 1;
 
@@ -65,7 +69,13 @@ public class BluetoothActivity extends AppCompatActivity {
         bluetoothDevices = new ArrayList<>();
         lvNewDevices = findViewById(R.id.lv_new_devices);
 
+        lvNewDevices.setOnItemClickListener(this);
+        lvNewDevices.setOnItemLongClickListener(this);
+
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        IntentFilter bondStateChangedIntent = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(broadcastReceiverBluetoothBondState, bondStateChangedIntent);
     }
 
     @Override
@@ -220,4 +230,64 @@ public class BluetoothActivity extends AppCompatActivity {
             }
         }
     };
+
+    private final BroadcastReceiver broadcastReceiverBluetoothBondState = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (action != null && action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                String deviceName = device.getName();
+
+                //Case 01: Already bonded
+                if(device.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    Toast.makeText(context, "Já pareado com o dispositivo '" + deviceName + "'",
+                            Toast.LENGTH_LONG).show();
+                }
+                //Case 02: Creating a bond
+                if(device.getBondState() == BluetoothDevice.BOND_BONDING) {
+                    Toast.makeText(context, "Pareando com o dispositivo '" + deviceName + "'",
+                            Toast.LENGTH_LONG).show();
+                }
+                //Case 03: Breaking a bond
+                if(device.getBondState() == BluetoothDevice.BOND_NONE) {
+                    Toast.makeText(context, "Despareado com o dispositivo '" + deviceName + "'",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    };
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        bluetoothAdapter.cancelDiscovery();
+
+        BluetoothDevice device = bluetoothDevices.get(i);
+
+        String deviceName = device.getName();
+        String deviceAddress = device.getAddress();
+
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            device.createBond();
+        }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        bluetoothAdapter.cancelDiscovery();
+
+        BluetoothDevice device = bluetoothDevices.get(i);
+
+        String deviceName = device.getName();
+        String deviceAddress = device.getAddress();
+
+        Toast.makeText(BluetoothActivity.this, "Conectando ao dispositivo '" + deviceName + "'",
+                Toast.LENGTH_LONG).show();
+
+        BluetoothConnectionThread connectionThread = new BluetoothConnectionThread(device);
+        connectionThread.run();
+
+        return true;
+    }
 }

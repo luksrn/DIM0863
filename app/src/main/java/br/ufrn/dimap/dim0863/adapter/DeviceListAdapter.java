@@ -15,7 +15,6 @@ import br.ufrn.dimap.dim0863.R;
 
 public class DeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
 
-
     private final List<BluetoothDevice> devices;
     private final LayoutInflater layoutInflater;
     private final int viewResourceId;
