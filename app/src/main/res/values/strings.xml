@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">DIM0863</string>
+    <string name="app_name">UFRN Drivers</string>
+    <string name="screen_login">Login</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -14,4 +16,5 @@
     <string name="btn_read_qrcode">Ler QRCode</string>
     <string name="btn_config_bluetooth">Configurar Bluetooth</string>
     <string name="btn_enable_disable_discovery">Habilitar/Desabilitar descoberta</string>
+    <string name="btn_start_data_collection">Iniciar coleta de dados</string>
 </resources>

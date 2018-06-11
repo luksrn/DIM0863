@@ -26,6 +26,12 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_find_bt_devices" />
 
+        <Button
+            android:id="@+id/btn_start_data_collection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_start_data_collection" />
+
         <ListView
             android:id="@+id/lv_new_devices"
             android:layout_width="match_parent"

@@ -3,16 +3,13 @@ package br.ufrn.dimap.dim0863.activities;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -23,10 +20,13 @@ import java.util.ArrayList;
 
 import br.ufrn.dimap.dim0863.R;
 import br.ufrn.dimap.dim0863.adapter.DeviceListAdapter;
+import br.ufrn.dimap.dim0863.services.ObdDataService;
 import br.ufrn.dimap.dim0863.util.BluetoothConnectionThread;
+import br.ufrn.dimap.dim0863.util.ServiceTools;
 
 
-public class BluetoothActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+public class BluetoothActivity extends AppCompatActivity
+        implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private static final int REQUEST_ENABLE_BT = 1;
 
@@ -44,6 +44,7 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
         Button btnEnableDisableBluetooth = findViewById(R.id.btn_enable_disable_bluetooth);
         Button btnEnableDisableDiscovery = findViewById(R.id.btn_enable_disable_discovery);
         Button btnFindBluetoothDevices = findViewById(R.id.btn_find_bluetooth_devices);
+        Button btnStartDataCollection = findViewById(R.id.btn_start_data_collection);
 
         btnEnableDisableBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +64,19 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
             @Override
             public void onClick(View view) {
                 BluetoothActivity.this.findBluetoothDevices();
+            }
+        });
+
+        btnStartDataCollection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent serviceIntent = new Intent(BluetoothActivity.this, ObdDataService.class);
+
+                if(!ServiceTools.isServiceRunning(BluetoothActivity.this, ObdDataService.class)) {
+                    startService(serviceIntent);
+                } else {
+                    stopService(serviceIntent);
+                }
             }
         });
 
@@ -126,13 +140,11 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
     }
 
     private void checkBluetoothPermissions() {
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            int permissionCheck = this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-            permissionCheck += this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
+        int permissionCheck = this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+        permissionCheck += this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
 
-            if(permissionCheck != 0) {
-                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSIONS);
-            }
+        if(permissionCheck != 0) {
+            this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSIONS);
         }
     }
 
@@ -264,13 +276,7 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
         bluetoothAdapter.cancelDiscovery();
 
         BluetoothDevice device = bluetoothDevices.get(i);
-
-        String deviceName = device.getName();
-        String deviceAddress = device.getAddress();
-
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            device.createBond();
-        }
+        device.createBond();
     }
 
     @Override
@@ -280,7 +286,6 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
         BluetoothDevice device = bluetoothDevices.get(i);
 
         String deviceName = device.getName();
-        String deviceAddress = device.getAddress();
 
         Toast.makeText(BluetoothActivity.this, "Conectando ao dispositivo '" + deviceName + "'",
                 Toast.LENGTH_LONG).show();
