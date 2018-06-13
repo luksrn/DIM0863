@@ -67,6 +67,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button btnCarInfo = findViewById(R.id.btn_car_info);
+        btnCarInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CarInfoActivity.class);
+                startActivity(intent);
+            }
+        });
 
         requestLocationPermissions();
 

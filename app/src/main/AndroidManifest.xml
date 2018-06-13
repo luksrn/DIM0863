@@ -3,10 +3,18 @@
     package="br.ufrn.dimap.dim0863">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -39,8 +47,48 @@
             android:label="@string/config_bluetooth">
         </activity>
 
+        <activity
+            android:name=".activities.CarInfoActivity"
+            android:label="@string/car_info">
+        </activity>
+
         <service android:name=".services.LocationService" android:process=":location_service" />
         <service android:name=".services.ObdDataService" android:process=":obd_data_service" />
+
+        <service
+            android:name=".sync.AuthenticatorService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <service
+            android:name=".sync.SyncService"
+            android:exported="true"
+            android:process=":sync_data_service">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
+
+        <provider
+            android:name=".sync.CarInfoContentProvider"
+            android:exported="false"
+            android:authorities="br.ufrn.dimap.dim0863.provider"
+            android:syncable="true" />
+
+        <receiver android:name=".sync.NetworkStateBroadcastReceiver" >
+            <intent-filter android:priority="100">
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

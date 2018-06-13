@@ -9,27 +9,21 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/btn_read_qrcode"
+            android:id="@+id/btn_add_car_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btn_read_qrcode" />
+            android:text="@string/btn_add_car_info" />
 
         <Button
-            android:id="@+id/btn_config_bluetooth"
+            android:id="@+id/btn_list_car_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btn_config_bluetooth" />
+            android:text="@string/btn_list_car_info" />
 
-        <Button
-            android:id="@+id/btn_car_info"
+        <ListView
+            android:id="@+id/lv_car_info"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_car_info" />
-
-        <TextView
-            android:id="@+id/log_operacoes"
-            android:layout_width="match_parent"
-            android:layout_height="467dp" />
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

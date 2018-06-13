@@ -17,4 +17,8 @@
     <string name="btn_config_bluetooth">Configurar Bluetooth</string>
     <string name="btn_enable_disable_discovery">Habilitar/Desabilitar descoberta</string>
     <string name="btn_start_data_collection">Iniciar coleta de dados</string>
+    <string name="btn_add_car_info">Adicionar Informação</string>
+    <string name="btn_list_car_info">Listar Informações</string>
+    <string name="car_info">Informações de Veículos</string>
+    <string name="btn_car_info">Informações de Veículos</string>
 </resources>
