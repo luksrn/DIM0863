@@ -120,16 +120,14 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         final TextView consoleLog = findViewById(R.id.log_operacoes);
-        String idChaveiro = "";
-        String username = "";
 
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanningResult != null && scanningResult.getContents() != null) {
-            idChaveiro = scanningResult.getContents();
+            String idChaveiro = scanningResult.getContents();
             consoleLog.append("QRCode com Chaveiro = " + idChaveiro + "\n");
 
             Session session = new Session(MainActivity.this);
-            username = session.getusename();
+            String username = session.getusename();
 
             JSONObject requestJSON = new JSONObject();
             try {

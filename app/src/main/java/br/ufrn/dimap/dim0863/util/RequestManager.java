@@ -20,9 +20,11 @@ public class RequestManager {
     private ImageLoader mImageLoader;
     private static Context mCtx;
 
-    public static final String WEBSERVICE_ENDPOINT = "http://192.168.1.100:8080";
+//    public static final String WEBSERVICE_ENDPOINT = "http://192.168.1.100:8080";
+    public static final String WEBSERVICE_ENDPOINT = "http://10.9.98.140:8080";
     public static final String CHAVEIRO_ENDPOINT = RequestManager.WEBSERVICE_ENDPOINT + "/api/v1/chaveiro";
     public static final String LOCALIZACAO_ENDPOINT = RequestManager.WEBSERVICE_ENDPOINT + "/api/v1/localizacao";
+    public static final String CAR_DATA_ENDPOINT = RequestManager.WEBSERVICE_ENDPOINT + "/api/v1/car/data";
 
     private RequestManager(Context context) {
         mCtx = context;

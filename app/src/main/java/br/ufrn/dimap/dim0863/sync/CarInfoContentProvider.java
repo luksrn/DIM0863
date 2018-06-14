@@ -27,6 +27,7 @@ public class CarInfoContentProvider extends ContentProvider {
     public static final Uri CONTENT_URI = Uri.parse(URL);
 
     public static final String _ID = "_id";
+    public static final String DATE = "date";
     public static final String LICENSE_PLATE = "license_plate";
     public static final String SPEED = "speed";
     public static final String RPM = "rpm";
@@ -51,6 +52,7 @@ public class CarInfoContentProvider extends ContentProvider {
     static final String CREATE_DB_TABLE =
             "CREATE TABLE " + CAR_INFO_TABLE_NAME + " (" +
                     _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    DATE + " TEXT NOT NULL, " +
                     LICENSE_PLATE + " TEXT NOT NULL, " +
                     SPEED + " INTEGER NOT NULL, " +
                     RPM + " INTEGER NOT NULL);";

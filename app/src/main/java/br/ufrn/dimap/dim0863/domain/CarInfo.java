@@ -1,14 +1,22 @@
 package br.ufrn.dimap.dim0863.domain;
 
+import java.util.Date;
+
 public class CarInfo {
 
     private int id;
+    private Date date;
     private String licensePlate;
     private int speed;
     private int rpm;
 
-    public CarInfo(int id, String licensePlate, int speed, int rpm) {
+    public CarInfo(int id, Date date, String licensePlate, int speed, int rpm) {
+        this(date, licensePlate, speed, rpm);
         this.id = id;
+    }
+
+    public CarInfo(Date date, String licensePlate, int speed, int rpm) {
+        this.date = date;
         this.licensePlate = licensePlate;
         this.speed = speed;
         this.rpm = rpm;
@@ -20,6 +28,14 @@ public class CarInfo {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getLicensePlate() {
