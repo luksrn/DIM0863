@@ -21,8 +21,7 @@ import br.ufrn.dimap.dim0863.dao.CarInfoDao;
 import br.ufrn.dimap.dim0863.domain.CarInfo;
 
 
-public class CarInfoActivity extends AppCompatActivity
-        implements AdapterView.OnItemLongClickListener {
+public class CarInfoActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener {
 
     private ListView lvCarInfo;
     private List<CarInfo> carInfoList;

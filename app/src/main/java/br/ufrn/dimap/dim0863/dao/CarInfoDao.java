@@ -47,6 +47,7 @@ public class CarInfoDao {
 
         String[] projection = {
                 CarInfoContentProvider._ID,
+                CarInfoContentProvider.DATE,
                 CarInfoContentProvider.LICENSE_PLATE,
                 CarInfoContentProvider.RPM,
                 CarInfoContentProvider.SPEED

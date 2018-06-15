@@ -16,10 +16,6 @@ import android.text.TextUtils;
 
 import java.util.HashMap;
 
-/*
- * Define an implementation of ContentProvider that stubs out
- * all methods
- */
 public class CarInfoContentProvider extends ContentProvider {
 
     public static final String PROVIDER_NAME = "br.ufrn.dimap.dim0863.provider";
@@ -44,9 +40,8 @@ public class CarInfoContentProvider extends ContentProvider {
         uriMatcher.addURI(PROVIDER_NAME, "car_info/#", CAR_INFO_ID);
     }
 
-    //Database specific constant declarations
     private SQLiteDatabase db;
-    static final String DATABASE_NAME = "College";
+    static final String DATABASE_NAME = "UfrnDrivers";
     static final String CAR_INFO_TABLE_NAME = "car_info";
     static final int DATABASE_VERSION = 1;
     static final String CREATE_DB_TABLE =
@@ -172,10 +167,10 @@ public class CarInfoContentProvider extends ContentProvider {
     @Override
     public String getType(@NonNull Uri uri) {
         switch (uriMatcher.match(uri)){
-            //Get all student records
+            //Get all car info
             case CAR_INFO:
                 return "vnd.android.cursor.dir/vnd.example.car_info";
-            //Get a particular student
+            //Get a particular car info
             case CAR_INFO_ID:
                 return "vnd.android.cursor.item/vnd.example.car_info";
             default:

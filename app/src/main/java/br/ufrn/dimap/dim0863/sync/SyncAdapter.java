@@ -9,7 +9,6 @@ import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -26,15 +25,12 @@ import br.ufrn.dimap.dim0863.domain.CarInfo;
 import br.ufrn.dimap.dim0863.util.RequestManager;
 
 /**
- * Handle the transfer of data between a server and an app, using the Android sync adapter framework.
+ * Get data stored locally and send to web server when connected to WiFi
  */
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
-    //Get data stored locally and send to FIWARE when connected to WiFi
-
     private final static String TAG = "SyncAdapter";
 
-    // Define a variable to contain a content resolver instance
     private ContentResolver contentResolver;
 
     /**
@@ -42,8 +38,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
      */
     SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
-
-        //If your app uses a content resolver, get an instance of it from the incoming Context
         contentResolver = context.getContentResolver();
     }
 
@@ -53,8 +47,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
      */
     SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
-
-        //If your app uses a content resolver, get an instance of it from the incoming Context
         contentResolver = context.getContentResolver();
     }
 
@@ -81,16 +73,26 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 @Override
                 public void onResponse(JSONObject response) {
-                    //Removes information sent
-                    CarInfoDao.getInstance().remove(contentResolver, carInfo);
-                    Log.d(TAG, "Removing car info with id " + carInfo.getId());
+                    try {
+                        String result = response.getString("result");
+                        if (result != null && result.equals("success")) {
+                            //Removes information sent from local database
+                            CarInfoDao.getInstance().remove(contentResolver, carInfo);
+                            Log.d(TAG, String.format("Removing car info with id %s", carInfo.getId()));
+                        } else {
+                            Log.d(TAG, String.format("Error while removing car info with id %s. Will try again later. ", carInfo.getId()));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }, new Response.ErrorListener() {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     //Keep object to be sent later
-                    Log.d(TAG, "Error while removing car info with id " + carInfo.getId());
+                    Log.e(TAG, String.format("Error on response from saving car info with id %s", carInfo.getId()));
+                    Log.e(TAG, error.toString());
                 }
             });
 
