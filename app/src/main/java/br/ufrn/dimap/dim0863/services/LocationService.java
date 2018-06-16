@@ -88,7 +88,8 @@ public class LocationService extends Service {
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, response.toString());
                     }
-                }, new Response.ErrorListener() {
+                },
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e(TAG, error.toString());

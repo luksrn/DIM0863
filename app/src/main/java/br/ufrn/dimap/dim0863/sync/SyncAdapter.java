@@ -73,32 +73,33 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 e.printStackTrace();
             }
 
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, RequestManager.CAR_DATA_ENDPOINT, requestJSON, new Response.Listener<JSONObject>() {
-
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        String result = response.getString("result");
-                        if (result != null && result.equals("success")) {
-                            //Removes information sent from local database
-                            CarInfoDao.getInstance().remove(contentResolver, carInfo);
-                            Log.d(TAG, String.format("Removing car info with id %s", carInfo.getId()));
-                        } else {
-                            Log.d(TAG, String.format("Error while removing car info with id %s. Will try again later. ", carInfo.getId()));
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, RequestManager.CAR_DATA_ENDPOINT, requestJSON,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                String result = response.getString("result");
+                                if (result != null && result.equals("success")) {
+                                    //Removes information sent from local database
+                                    CarInfoDao.getInstance().remove(contentResolver, carInfo);
+                                    Log.d(TAG, String.format("Removing car info with id %s", carInfo.getId()));
+                                } else {
+                                    Log.d(TAG, String.format("Error while removing car info with id %s. Will try again later. ", carInfo.getId()));
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
+                    },
+                    new Response.ErrorListener() {
 
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    //Keep object to be sent later
-                    Log.e(TAG, String.format("Error on response from saving car info with id %s", carInfo.getId()));
-                    Log.e(TAG, error.toString());
-                }
-            });
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //Keep object to be sent later
+                            Log.e(TAG, String.format("Error on response from saving car info with id %s", carInfo.getId()));
+                            Log.e(TAG, error.toString());
+                        }
+                    });
 
             RequestManager.getInstance(getContext()).addToRequestQueue(request);
         }
