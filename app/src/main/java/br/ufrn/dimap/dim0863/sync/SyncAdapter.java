@@ -61,10 +61,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         for (final CarInfo carInfo : carInfoList) {
             JSONObject requestJSON = new JSONObject();
             try {
-                requestJSON.put("date", new Date());
-                requestJSON.put("license_plate", carInfo.getLicensePlate());
-                requestJSON.put("speed", carInfo.getSpeed());
-                requestJSON.put("rpm", carInfo.getRpm());
+                requestJSON.put("licensePlate", carInfo.getLicensePlate());
+
+                JSONObject carInfoJson = new JSONObject();
+                carInfoJson.put("date", new Date());
+                carInfoJson.put("speed", carInfo.getSpeed());
+                carInfoJson.put("rpm", carInfo.getRpm());
+
+                requestJSON.put("carInfo", carInfoJson);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
