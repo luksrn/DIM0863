@@ -1,22 +1,33 @@
 package br.ufrn.dimap.dim0863.activities;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import br.ufrn.dimap.dim0863.R;
+import br.ufrn.dimap.dim0863.services.MyFirebaseInstanceIDService;
 import br.ufrn.dimap.dim0863.util.Session;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final int REQUEST_PERMISSIONS = 100;
 
     private final static String TAG = LoginActivity.class.getSimpleName();
 
@@ -51,10 +62,40 @@ public class LoginActivity extends AppCompatActivity {
                 Session session = new Session(LoginActivity.this);
                 session.setusename(username);
 
+                String token = FirebaseInstanceId.getInstance().getToken();
+                MyFirebaseInstanceIDService.sendRegistrationToServer(getApplicationContext(), token);
+
                 Intent principal = new Intent(LoginActivity.this, MainActivity.class);
                 LoginActivity.this.startActivity(principal);
             }
         });
+
+        requestLocationPermissions();
+    }
+
+    private void requestLocationPermissions() {
+        if ((ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                || (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+            if (!(ActivityCompat.shouldShowRequestPermissionRationale(LoginActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION))
+                    && !(ActivityCompat.shouldShowRequestPermissionRationale(LoginActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION))) {
+                ActivityCompat.requestPermissions(LoginActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSIONS);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case REQUEST_PERMISSIONS: {
+                if (grantResults.length <= 0 || grantResults[0] == PackageManager.PERMISSION_DENIED
+                        || grantResults[1] == PackageManager.PERMISSION_DENIED) {
+                    Toast.makeText(getApplicationContext(), "Por favor, aceite as permissões solicitadas para poder utilizar o app.",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     /**

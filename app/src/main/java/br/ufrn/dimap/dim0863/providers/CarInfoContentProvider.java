@@ -1,4 +1,4 @@
-package br.ufrn.dimap.dim0863.sync;
+package br.ufrn.dimap.dim0863.providers;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

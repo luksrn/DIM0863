@@ -1,8 +1,10 @@
-package br.ufrn.dimap.dim0863.sync;
+package br.ufrn.dimap.dim0863.services;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+
+import br.ufrn.dimap.dim0863.sync.SyncAdapter;
 
 /**
  * Define a Service that returns an IBinder for the sync adapter class,

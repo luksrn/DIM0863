@@ -1,4 +1,4 @@
-package br.ufrn.dimap.dim0863.sync;
+package br.ufrn.dimap.dim0863.auth;
 
 import android.app.Service;
 import android.content.Intent;

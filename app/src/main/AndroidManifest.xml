@@ -53,25 +53,30 @@
             android:label="@string/car_info">
         </activity>
 
-        <service android:name=".services.LocationService" android:process=":location_service" />
-        <service android:name=".services.ObdDataService" android:process=":obd_data_service" />
+        <service
+            android:name=".services.LocationDataService"
+            android:process=":location_data_service" />
 
         <service
-            android:name=".firebase.MyFirebaseInstanceIDService">
+            android:name=".services.ObdDataService"
+            android:process=":obd_data_service" />
+
+        <service
+            android:name=".services.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name=".firebase.FirebaseListenerService">
+            android:name=".services.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name=".sync.AuthenticatorService"
+            android:name=".auth.AuthenticatorService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>
@@ -82,7 +87,7 @@
         </service>
 
         <service
-            android:name=".sync.SyncService"
+            android:name=".services.SyncService"
             android:exported="true"
             android:process=":sync_data_service">
             <intent-filter>
@@ -93,12 +98,19 @@
         </service>
 
         <provider
-            android:name=".sync.CarInfoContentProvider"
+            android:name=".providers.CarInfoContentProvider"
             android:exported="false"
             android:authorities="br.ufrn.dimap.dim0863.provider"
             android:syncable="true" />
 
-        <receiver android:name=".sync.NetworkStateBroadcastReceiver" >
+        <receiver android:name=".receivers.CollectDataBroadcastReceiver" >
+            <intent-filter android:priority="100">
+                <action android:name="br.ufrn.dimap.dim0863.START_COLLECT_REQUESTED" />
+                <action android:name="br.ufrn.dimap.dim0863.STOP_COLLECT_REQUESTED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receivers.NetworkStateBroadcastReceiver" >
             <intent-filter android:priority="100">
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>

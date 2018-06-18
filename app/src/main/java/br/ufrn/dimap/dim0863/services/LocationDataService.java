@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -17,25 +18,24 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import br.ufrn.dimap.dim0863.util.DateUtil;
 import br.ufrn.dimap.dim0863.util.RequestManager;
 import br.ufrn.dimap.dim0863.util.Session;
 
-public class LocationService extends Service {
+public class LocationDataService extends Service {
 
-    private static final String TAG = "BOOMBOOMTESTGPS";
+    private static final String TAG = "LocationDataService";
     private LocationManager locationManager = null;
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 0f;
 
-    private class LocationListener implements android.location.LocationListener {
+    private class UserLocationListener implements LocationListener {
 
         Location lastLocation;
 
-        private LocationListener(String provider) {
+        private UserLocationListener(String provider) {
             Log.d(TAG, "LocationListener: " + provider);
             lastLocation = new Location(provider);
         }
@@ -71,9 +71,8 @@ public class LocationService extends Service {
         try {
             requestJSON.put("login", username);
 
-            DateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             JSONObject locationObject = new JSONObject();
-            locationObject.put("data", DATE_FORMATTER.format(new Date()));
+            locationObject.put("data", DateUtil.convertToString(new Date()));
             locationObject.put("latitude", location.getLatitude());
             locationObject.put("longitude", location.getLongitude());
             requestJSON.put("localizacao", locationObject);
@@ -100,8 +99,8 @@ public class LocationService extends Service {
     }
 
     LocationListener[] locationListeners = new LocationListener[] {
-            new LocationListener(LocationManager.GPS_PROVIDER),
-            new LocationListener(LocationManager.NETWORK_PROVIDER)
+            new UserLocationListener(LocationManager.GPS_PROVIDER),
+            new UserLocationListener(LocationManager.NETWORK_PROVIDER)
     };
 
     @Override
@@ -123,17 +122,17 @@ public class LocationService extends Service {
         try {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE, locationListeners[1]);
         } catch(java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
+            Log.i(TAG, "Fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
+            Log.d(TAG, "Network provider does not exist. " + ex.getMessage());
         }
 
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE, locationListeners[0]);
         } catch(java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
+            Log.i(TAG, "Fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "gps provider does not exist, " + ex.getMessage());
+            Log.d(TAG, "GPS provider does not exist, " + ex.getMessage());
         }
     }
 
@@ -146,7 +145,7 @@ public class LocationService extends Service {
                 try {
                     locationManager.removeUpdates(locationListener);
                 } catch (Exception ex) {
-                    Log.i(TAG, "fail to remove location listeners, ignore", ex);
+                    Log.i(TAG, "Fail to remove location listeners, ignore", ex);
                 }
             }
         }

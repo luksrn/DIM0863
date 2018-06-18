@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.ufrn.dimap.dim0863.domain.CarInfo;
-import br.ufrn.dimap.dim0863.sync.CarInfoContentProvider;
+import br.ufrn.dimap.dim0863.providers.CarInfoContentProvider;
 import br.ufrn.dimap.dim0863.util.DateUtil;
 
 public class CarInfoDao {

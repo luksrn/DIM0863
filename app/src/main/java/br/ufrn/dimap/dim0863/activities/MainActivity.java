@@ -1,19 +1,12 @@
 package br.ufrn.dimap.dim0863.activities;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -30,12 +23,8 @@ import org.json.JSONObject;
 import br.ufrn.dimap.dim0863.R;
 import br.ufrn.dimap.dim0863.util.RequestManager;
 import br.ufrn.dimap.dim0863.util.Session;
-import br.ufrn.dimap.dim0863.services.LocationService;
 
 public class MainActivity extends AppCompatActivity {
-
-    private boolean locationPermission;
-    private static final int REQUEST_PERMISSIONS = 100;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,44 +64,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        requestLocationPermissions();
-
-        if (locationPermission) {
-            Intent intent = new Intent(getApplicationContext(), LocationService.class);
-            startService(intent);
-        } else {
-            Toast.makeText(getApplicationContext(), "Por favor, habilite o GPS", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void requestLocationPermissions() {
-        if ((ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                || (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
-            if (!(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION))
-                    && !(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION))) {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSIONS);
-            }
-        } else {
-            locationPermission = true;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        switch (requestCode) {
-            case REQUEST_PERMISSIONS: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    locationPermission = true;
-                } else {
-                    Toast.makeText(getApplicationContext(), "Por favor, aceite as permissões solicitadas",
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        }
     }
 
     @Override

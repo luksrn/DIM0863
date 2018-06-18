@@ -1,4 +1,4 @@
-package br.ufrn.dimap.dim0863.sync;
+package br.ufrn.dimap.dim0863.receivers;
 
 import android.accounts.Account;
 import android.content.BroadcastReceiver;

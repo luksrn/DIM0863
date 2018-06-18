@@ -1,4 +1,4 @@
-package br.ufrn.dimap.dim0863.sync;
+package br.ufrn.dimap.dim0863.auth;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;

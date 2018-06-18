@@ -29,9 +29,12 @@ import java.util.UUID;
 
 public class ObdDataService extends Service {
 
-    public static final String OBD_MAC_ADDRESS = "OBD_MAC_ADDRESS";
+    public static final String OBD_MAC_ADDRESS_EXTRA = "OBD_MAC_ADDRESS_EXTRA";
     private static final String OBD_SERVICE_TAG = "ObdDtService";
     private static final UUID BLUETOOTH_MODULE_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+    public static final String MACBOOK_MAC_ADDRESS = "60:F8:1D:B4:B6:31";
+    public static final String OBD_MAC_ADDRESS     = "00:1D:A5:68:98:8E";
 
     private BluetoothAdapter bluetoothAdapter = null;
 
@@ -52,7 +55,7 @@ public class ObdDataService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(OBD_SERVICE_TAG, "Service started");
 
-        this.searchedObdAddress = intent.getStringExtra(OBD_MAC_ADDRESS);
+        this.searchedObdAddress = intent.getStringExtra(OBD_MAC_ADDRESS_EXTRA);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         checkBTState();

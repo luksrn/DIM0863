@@ -32,9 +32,6 @@ public class BluetoothActivity extends AppCompatActivity
 
     private static final int REQUEST_PERMISSIONS = 1001;
 
-    private static final String MACBOOK_ADDRESS = "60:F8:1D:B4:B6:31";
-    private static final String OBD_ADDRESS     = "00:1D:A5:68:98:8E";
-
     private BluetoothAdapter bluetoothAdapter;
     private ArrayList<BluetoothDevice> bluetoothDevices;
     private ListView lvNewDevices;
@@ -75,8 +72,8 @@ public class BluetoothActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent serviceIntent = new Intent(BluetoothActivity.this, ObdDataService.class);
                 //TODO Store OBD devices addresses on database and use dynamically desired address to connect
-//                serviceIntent.putExtra(ObdDataService.OBD_MAC_ADDRESS, OBD_MAC_ADDRESS);
-                serviceIntent.putExtra(ObdDataService.OBD_MAC_ADDRESS, MACBOOK_ADDRESS);
+//                serviceIntent.putExtra(ObdDataService.OBD_MAC_ADDRESS_EXTRA, ObdDataService.OBD_MAC_ADDRESS);
+                serviceIntent.putExtra(ObdDataService.OBD_MAC_ADDRESS_EXTRA, ObdDataService.MACBOOK_MAC_ADDRESS);
 
                 if(!ServiceTools.isServiceRunning(BluetoothActivity.this, ObdDataService.class)) {
                     startService(serviceIntent);

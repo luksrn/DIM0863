@@ -1,5 +1,6 @@
-package br.ufrn.dimap.dim0863.firebase;
+package br.ufrn.dimap.dim0863.services;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -32,13 +33,13 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(refreshedToken);
+        sendRegistrationToServer(getApplicationContext(), refreshedToken);
     }
 
-    private void sendRegistrationToServer(String refreshedToken) {
+    public static void sendRegistrationToServer(Context context, String refreshedToken) {
         Log.d(TAG, "Sending refreshed token '" + refreshedToken + "' to server.");
 
-        Session session = new Session(getApplicationContext());
+        Session session = new Session(context);
         String username = session.getusename();
 
         JSONObject requestJSON = new JSONObject();
@@ -64,7 +65,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
                     }
                 });
 
-        RequestManager.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        RequestManager.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 
 }
