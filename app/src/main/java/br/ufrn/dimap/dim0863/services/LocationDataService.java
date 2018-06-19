@@ -10,18 +10,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Date;
 
-import br.ufrn.dimap.dim0863.util.DateUtil;
-import br.ufrn.dimap.dim0863.util.RequestManager;
+import br.ufrn.dimap.dim0863.dao.UserLocationDao;
+import br.ufrn.dimap.dim0863.domain.UserLocation;
 import br.ufrn.dimap.dim0863.util.Session;
 
 public class LocationDataService extends Service {
@@ -44,7 +36,17 @@ public class LocationDataService extends Service {
         public void onLocationChanged(Location location) {
             Log.d(TAG, String.format("onLocationChanged: (%f, %f)", location.getLatitude(), location.getLongitude()));
             lastLocation.set(location);
-            sendLocationRequest(location);
+            storeUserLocation(location);
+        }
+
+        private void storeUserLocation(Location location) {
+            Log.d(TAG, "Storing user location");
+
+            Session session = new Session(getApplicationContext());
+            String username = session.getusename();
+
+            UserLocation userLocation = new UserLocation(new Date(), location.getLatitude(), location.getLongitude());
+            UserLocationDao.getInstance().add(getContentResolver(), username, userLocation);
         }
 
         @Override
@@ -61,41 +63,6 @@ public class LocationDataService extends Service {
         public void onProviderDisabled(String provider) {
             Log.d(TAG, "onProviderDisabled: " + provider);
         }
-    }
-
-    public void sendLocationRequest(Location location) {
-        Session session = new Session(getApplicationContext());
-        String username = session.getusename();
-
-        JSONObject requestJSON = new JSONObject();
-        try {
-            requestJSON.put("login", username);
-
-            JSONObject locationObject = new JSONObject();
-            locationObject.put("data", DateUtil.convertToString(new Date()));
-            locationObject.put("latitude", location.getLatitude());
-            locationObject.put("longitude", location.getLongitude());
-            requestJSON.put("localizacao", locationObject);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST, RequestManager.LOCALIZACAO_ENDPOINT, requestJSON,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, error.toString());
-                    }
-                });
-
-        RequestManager.getInstance(this).addToRequestQueue(jsonObjectRequest);
     }
 
     LocationListener[] locationListeners = new LocationListener[] {

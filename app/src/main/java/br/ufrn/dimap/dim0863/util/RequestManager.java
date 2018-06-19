@@ -23,7 +23,7 @@ public class RequestManager {
     public static final String WEBSERVICE_ENDPOINT = "http://192.168.0.108:8080";
     public static final String API_ENDPOINT = WEBSERVICE_ENDPOINT + "/api/v1";
     public static final String CHAVEIRO_ENDPOINT = RequestManager.API_ENDPOINT + "/chaveiro";
-    public static final String LOCALIZACAO_ENDPOINT = RequestManager.API_ENDPOINT + "/localizacao";
+    public static final String LOCATION_ENDPOINT = RequestManager.API_ENDPOINT + "/localizacao";
     public static final String CAR_DATA_ENDPOINT = RequestManager.API_ENDPOINT + "/car/data";
     public static final String UPDATE_TOKEN_ENDPOINT = RequestManager.API_ENDPOINT + "/firebase/update-token";
 
