@@ -17,30 +17,26 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
 import java.util.List;
 
 import br.ufrn.dimap.dim0863.dao.CarInfoDao;
-import br.ufrn.dimap.dim0863.dao.UserLocationDao;
 import br.ufrn.dimap.dim0863.domain.CarInfo;
-import br.ufrn.dimap.dim0863.domain.UserLocation;
 import br.ufrn.dimap.dim0863.util.DateUtil;
 import br.ufrn.dimap.dim0863.util.RequestManager;
-import br.ufrn.dimap.dim0863.util.Session;
 
 /**
  * Get data stored locally and send to web server when connected to WiFi
  */
-public class SyncAdapter extends AbstractThreadedSyncAdapter {
+public class CarInfoSyncAdapter extends AbstractThreadedSyncAdapter {
 
-    private final static String TAG = "SyncAdapter";
+    private final static String TAG = "CarInfoSyncAdapter";
 
     private ContentResolver contentResolver;
 
     /**
      * Set up the sync adapter
      */
-    public SyncAdapter(Context context, boolean autoInitialize) {
+    public CarInfoSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         contentResolver = context.getContentResolver();
     }
@@ -49,7 +45,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
      * Set up the sync adapter. This form of the constructor maintains compatibility with
      * Android 3.0 and later platform versions
      */
-    SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
+    CarInfoSyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
         contentResolver = context.getContentResolver();
     }
@@ -64,15 +60,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         List<CarInfo> carInfoList = CarInfoDao.getInstance().findAll(contentResolver);
         for (final CarInfo carInfo : carInfoList) {
             sendCarInfo(carInfo);
-        }
-
-        //Send user location data
-        Session session = new Session(getContext());
-        String username = session.getusename();
-
-        List<UserLocation> userLocationList = UserLocationDao.getInstance().findByLogin(contentResolver, username);
-        for (final UserLocation userLocation : userLocationList) {
-            sendUserLocation(username, userLocation);
         }
     }
 
@@ -120,50 +107,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 });
 
         RequestManager.getInstance(getContext()).addToRequestQueue(request);
-    }
-
-    private void sendUserLocation(String login, final UserLocation userLocation) {
-        JSONObject requestJSON = new JSONObject();
-        try {
-            requestJSON.put("login", login);
-
-            JSONObject locationObject = new JSONObject();
-            locationObject.put("date", DateUtil.convertToString(userLocation.getDate()));
-            locationObject.put("lat", userLocation.getLat());
-            locationObject.put("lon", userLocation.getLon());
-            requestJSON.put("location", locationObject);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, RequestManager.LOCATION_ENDPOINT, requestJSON,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        String result = response.getString("result");
-                        if (result != null && result.equals("success")) {
-                            //Removes information sent from local database
-                            UserLocationDao.getInstance().remove(contentResolver, userLocation);
-                            Log.d(TAG, String.format("Removing user location with id %s", userLocation.getId()));
-                        } else {
-                            Log.d(TAG, String.format("Error while removing user location with id %s. Will try again later. ", userLocation.getId()));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    //Keep object to be sent later
-                    Log.e(TAG, String.format("Error on response from saving user location with id %s", userLocation.getId()));
-                    Log.e(TAG, error.toString());
-                }
-            });
-
-        RequestManager.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 
 }

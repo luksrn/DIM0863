@@ -3,7 +3,6 @@ package br.ufrn.dimap.dim0863.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -13,39 +12,39 @@ import android.util.Log;
 import java.util.Date;
 
 import br.ufrn.dimap.dim0863.dao.UserLocationDao;
-import br.ufrn.dimap.dim0863.domain.UserLocation;
+import br.ufrn.dimap.dim0863.domain.Location;
 import br.ufrn.dimap.dim0863.util.Session;
 
 public class LocationDataService extends Service {
 
     private static final String TAG = "LocationDataService";
     private LocationManager locationManager = null;
-    private static final int LOCATION_INTERVAL = 1000;
+    private static final int LOCATION_INTERVAL = 5000;
     private static final float LOCATION_DISTANCE = 0f;
 
     private class UserLocationListener implements LocationListener {
 
-        Location lastLocation;
+        android.location.Location lastLocation;
 
         private UserLocationListener(String provider) {
             Log.d(TAG, "LocationListener: " + provider);
-            lastLocation = new Location(provider);
+            lastLocation = new android.location.Location(provider);
         }
 
         @Override
-        public void onLocationChanged(Location location) {
+        public void onLocationChanged(android.location.Location location) {
             Log.d(TAG, String.format("onLocationChanged: (%f, %f)", location.getLatitude(), location.getLongitude()));
             lastLocation.set(location);
             storeUserLocation(location);
         }
 
-        private void storeUserLocation(Location location) {
+        private void storeUserLocation(android.location.Location location) {
             Log.d(TAG, "Storing user location");
 
             Session session = new Session(getApplicationContext());
             String username = session.getusename();
 
-            UserLocation userLocation = new UserLocation(new Date(), location.getLatitude(), location.getLongitude());
+            Location userLocation = new Location(new Date(), location.getLatitude(), location.getLongitude());
             UserLocationDao.getInstance().add(getContentResolver(), username, userLocation);
         }
 

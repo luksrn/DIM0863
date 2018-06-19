@@ -13,7 +13,8 @@ public class NetworkStateBroadcastReceiver extends BroadcastReceiver {
 
     private final static String TAG = "NetworkState";
 
-    public static final String AUTHORITY = "br.ufrn.dimap.dim0863.provider";
+    public static final String USER_LOCATION_AUTHORITY = "br.ufrn.dimap.dim0863.user.provider";
+    public static final String CAR_INFO_AUTHORITY = "br.ufrn.dimap.dim0863.car.provider";
 
     public static final String ACCOUNT_TYPE = "br.ufrn.dimap.dim0863";
 
@@ -27,7 +28,7 @@ public class NetworkStateBroadcastReceiver extends BroadcastReceiver {
             int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
 
             if (wifiState == WifiManager.WIFI_STATE_ENABLED) {
-                Log.d(TAG, "Wifi is now enabled");
+                Log.d(TAG, "WiFi is now enabled");
 
                 Account account = new Account(ACCOUNT, ACCOUNT_TYPE);
 
@@ -38,11 +39,16 @@ public class NetworkStateBroadcastReceiver extends BroadcastReceiver {
                 /*
                  * Request the sync for the default account, authority, and manual sync settings
                  */
-                ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
+                ContentResolver.requestSync(account, USER_LOCATION_AUTHORITY, settingsBundle);
+                ContentResolver.requestSync(account, CAR_INFO_AUTHORITY, settingsBundle);
             } else {
-                Log.d(TAG, "Wifi is now disabled");
+                Log.d(TAG, "WiFi is now disabled");
 
-                //TODO Stop sync
+                //TODO Verify sync stop
+                Account account = new Account(ACCOUNT, ACCOUNT_TYPE);
+
+                ContentResolver.cancelSync(account, USER_LOCATION_AUTHORITY);
+                ContentResolver.cancelSync(account, CAR_INFO_AUTHORITY);
             }
         }
     }

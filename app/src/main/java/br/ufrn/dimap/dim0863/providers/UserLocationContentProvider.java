@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 public class UserLocationContentProvider extends ContentProvider {
 
-    public static final String PROVIDER_NAME = "br.ufrn.dimap.dim0863.provider";
+    public static final String PROVIDER_NAME = "br.ufrn.dimap.dim0863.user.provider";
     public static final String URL = "content://" + PROVIDER_NAME + "/user_location";
     public static final Uri CONTENT_URI = Uri.parse(URL);
 
@@ -41,7 +41,7 @@ public class UserLocationContentProvider extends ContentProvider {
     }
 
     private SQLiteDatabase db;
-    static final String DATABASE_NAME = "UfrnDrivers";
+    static final String DATABASE_NAME = "UfrnDriversUserLocation";
     static final String USER_LOCATION_TABLE_NAME = "user_location";
     static final int DATABASE_VERSION = 1;
     static final String CREATE_DB_TABLE =

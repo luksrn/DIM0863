@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.ufrn.dimap.dim0863.domain.UserLocation;
+import br.ufrn.dimap.dim0863.domain.Location;
 import br.ufrn.dimap.dim0863.providers.UserLocationContentProvider;
 import br.ufrn.dimap.dim0863.util.DateUtil;
 
@@ -24,26 +24,26 @@ public class UserLocationDao {
         return instance;
     }
 
-    public Uri add(ContentResolver contentResolver, String login, UserLocation userLocation) {
+    public Uri add(ContentResolver contentResolver, String login, Location location) {
         ContentValues values = new ContentValues();
-        values.put(UserLocationContentProvider.DATE, DateUtil.convertToString(userLocation.getDate()));
+        values.put(UserLocationContentProvider.DATE, DateUtil.convertToString(location.getDate()));
         values.put(UserLocationContentProvider.LOGIN, login);
-        values.put(UserLocationContentProvider.LAT, userLocation.getLat());
-        values.put(UserLocationContentProvider.LON, userLocation.getLon());
+        values.put(UserLocationContentProvider.LAT, location.getLat());
+        values.put(UserLocationContentProvider.LON, location.getLon());
 
         return contentResolver.insert(UserLocationContentProvider.CONTENT_URI, values);
     }
 
-    public int remove(ContentResolver contentResolver, UserLocation userLocation) {
-        int id = userLocation.getId();
+    public int remove(ContentResolver contentResolver, Location location) {
+        int id = location.getId();
         String userLocationURL= UserLocationContentProvider.URL + "/" + id;
         Uri userLocationURI = Uri.parse(userLocationURL);
 
         return contentResolver.delete(userLocationURI, null, null);
     }
 
-    public List<UserLocation> findByLogin(ContentResolver contentResolver, String login) {
-        List<UserLocation> tempUserLocationList = new ArrayList<>();
+    public List<Location> findByLogin(ContentResolver contentResolver, String login) {
+        List<Location> tempLocationList = new ArrayList<>();
 
         String[] projection = {
                 UserLocationContentProvider._ID,
@@ -66,14 +66,14 @@ public class UserLocationDao {
                     double lat = cursor.getDouble(cursor.getColumnIndexOrThrow(UserLocationContentProvider.LAT));
                     double lon = cursor.getInt(cursor.getColumnIndexOrThrow(UserLocationContentProvider.LON));
 
-                    UserLocation userLocation = new UserLocation(_id, date, lat, lon);
-                    tempUserLocationList.add(userLocation);
+                    Location location = new Location(_id, date, lat, lon);
+                    tempLocationList.add(location);
                 } while (cursor.moveToNext());
             }
             cursor.close();
         }
 
-        return tempUserLocationList;
+        return tempLocationList;
     }
 
 }

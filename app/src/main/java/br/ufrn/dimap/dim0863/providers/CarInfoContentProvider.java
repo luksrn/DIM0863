@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 public class CarInfoContentProvider extends ContentProvider {
 
-    public static final String PROVIDER_NAME = "br.ufrn.dimap.dim0863.provider";
+    public static final String PROVIDER_NAME = "br.ufrn.dimap.dim0863.car.provider";
     public static final String URL = "content://" + PROVIDER_NAME + "/car_info";
     public static final Uri CONTENT_URI = Uri.parse(URL);
 
@@ -41,7 +41,7 @@ public class CarInfoContentProvider extends ContentProvider {
     }
 
     private SQLiteDatabase db;
-    static final String DATABASE_NAME = "UfrnDrivers";
+    static final String DATABASE_NAME = "UfrnDriversCarInfo";
     static final String CAR_INFO_TABLE_NAME = "car_info";
     static final int DATABASE_VERSION = 1;
     static final String CREATE_DB_TABLE =

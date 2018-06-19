@@ -2,19 +2,19 @@ package br.ufrn.dimap.dim0863.domain;
 
 import java.util.Date;
 
-public class UserLocation {
+public class Location {
 
     private int id;
     private Date date;
     private double lat;
     private double lon;
 
-    public UserLocation(int id, Date date, double lat, double lon) {
+    public Location(int id, Date date, double lat, double lon) {
         this(date, lat, lon);
         this.id = id;
     }
 
-    public UserLocation(Date date, double lat, double lon) {
+    public Location(Date date, double lat, double lon) {
         this.date = date;
         this.lat = lat;
         this.lon = lon;

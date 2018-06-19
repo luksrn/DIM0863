@@ -87,20 +87,39 @@
         </service>
 
         <service
-            android:name=".services.SyncService"
+            android:name=".services.UserLocationSyncService"
             android:exported="true"
-            android:process=":sync_data_service">
+            android:process=":sync_service_user_location">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter"/>
             </intent-filter>
-            <meta-data android:name="android.content.SyncAdapter"
-                android:resource="@xml/syncadapter" />
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/sync_adapter_user_location" />
         </service>
+
+        <service
+            android:name=".services.CarInfoSyncService"
+            android:exported="true"
+            android:process=":sync_service_car_info">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/sync_adapter_car_info" />
+        </service>
+
+        <provider
+            android:name=".providers.UserLocationContentProvider"
+            android:exported="false"
+            android:authorities="br.ufrn.dimap.dim0863.user.provider"
+            android:syncable="true" />
 
         <provider
             android:name=".providers.CarInfoContentProvider"
             android:exported="false"
-            android:authorities="br.ufrn.dimap.dim0863.provider"
+            android:authorities="br.ufrn.dimap.dim0863.car.provider"
             android:syncable="true" />
 
         <receiver android:name=".receivers.CollectDataBroadcastReceiver" >

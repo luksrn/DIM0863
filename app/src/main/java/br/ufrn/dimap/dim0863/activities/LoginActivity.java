@@ -32,14 +32,13 @@ public class LoginActivity extends AppCompatActivity {
     private final static String TAG = LoginActivity.class.getSimpleName();
 
     // The authority for the sync adapter's content provider
-    public static final String AUTHORITY = "br.ufrn.dimap.dim0863.provider";
+    public static final String USER_LOCATION_AUTHORITY = "br.ufrn.dimap.dim0863.user.provider";
+    public static final String CAR_INFO_AUTHORITY = "br.ufrn.dimap.dim0863.car.provider";
 
     // An account type, in the form of a domain name
     public static final String ACCOUNT_TYPE = "br.ufrn.dimap.dim0863";
 
     public static final String ACCOUNT = "default_account";
-
-    public Account account;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,9 +46,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Create the dummy account
-        account = createSyncAccount(this);
+        Account carInfoAccount = createSyncAccount(this, ACCOUNT, ACCOUNT_TYPE, CAR_INFO_AUTHORITY);
+        Account userLocationAccount = createSyncAccount(this, ACCOUNT, ACCOUNT_TYPE, USER_LOCATION_AUTHORITY);
 
-        ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
+        ContentResolver.setSyncAutomatically(carInfoAccount, CAR_INFO_AUTHORITY, true);
+        ContentResolver.setSyncAutomatically(userLocationAccount, USER_LOCATION_AUTHORITY, true);
 
         Button botaoLogin = findViewById(R.id.botao_logar);
         final EditText etUsername = findViewById(R.id.login_username);
@@ -103,12 +104,12 @@ public class LoginActivity extends AppCompatActivity {
      *
      * @param context The application context
      */
-    public static Account createSyncAccount(Context context) {
+    public static Account createSyncAccount(Context context, String account, String accountType, String authority) {
         // Create the account type and default account
-        Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
+        Account newAccount = new Account(account, accountType);
 
         // Get an instance of the Android account manager
-        AccountManager accountManager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE);
+        AccountManager accountManager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
         /*
          * Add the account and account type, no password or user data
          * If successful, return the Account object, otherwise report an error.
@@ -117,13 +118,13 @@ public class LoginActivity extends AppCompatActivity {
             /*
              * If you don't set android:syncable="true" in
              * in your <provider> element in the manifest,
-             * then call context.setIsSyncable(account, AUTHORITY, 1)
+             * then call context.setIsSyncable(account, USER_LOCATION_AUTHORITY, 1)
              * here.
              */
             Bundle extras = new Bundle();
-            ContentResolver.setIsSyncable(newAccount, AUTHORITY, 1);
-            ContentResolver.setSyncAutomatically(newAccount, AUTHORITY, true);
-            ContentResolver.requestSync(newAccount, AUTHORITY, extras);
+            ContentResolver.setIsSyncable(newAccount, authority, 1);
+            ContentResolver.setSyncAutomatically(newAccount, authority, true);
+            ContentResolver.requestSync(newAccount, authority, extras);
             Log.d(TAG, "Account created");
         } else {
             /*

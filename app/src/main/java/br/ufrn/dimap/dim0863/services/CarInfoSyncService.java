@@ -4,15 +4,15 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import br.ufrn.dimap.dim0863.sync.SyncAdapter;
+import br.ufrn.dimap.dim0863.sync.CarInfoSyncAdapter;
 
 /**
  * Define a Service that returns an IBinder for the sync adapter class,
  * allowing the sync adapter framework to call onPerformSync().
  */
-public class SyncService extends Service {
+public class CarInfoSyncService extends Service {
 
-    private static SyncAdapter syncAdapter = null;
+    private static CarInfoSyncAdapter syncAdapter = null;
 
     private static final Object syncAdapterLock = new Object();
 
@@ -26,7 +26,7 @@ public class SyncService extends Service {
          */
         synchronized (syncAdapterLock) {
             if (syncAdapter == null) {
-                syncAdapter = new SyncAdapter(getApplicationContext(), true);
+                syncAdapter = new CarInfoSyncAdapter(getApplicationContext(), true);
             }
         }
     }
@@ -38,7 +38,7 @@ public class SyncService extends Service {
     public IBinder onBind(Intent intent) {
         /*
          * Get the object that allows external processes to call onPerformSync().
-         * The object is created in the base class code when the SyncAdapter
+         * The object is created in the base class code when the UserLocationSyncAdapter
          * constructors call super()
          */
         return syncAdapter.getSyncAdapterBinder();
