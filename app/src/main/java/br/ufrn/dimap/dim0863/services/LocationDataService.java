@@ -39,12 +39,12 @@ public class LocationDataService extends Service {
         }
 
         private void storeUserLocation(android.location.Location location) {
-            Log.d(TAG, "Storing user location");
-
             Session session = new Session(getApplicationContext());
             String username = session.getusename();
 
             Location userLocation = new Location(new Date(), location.getLatitude(), location.getLongitude());
+
+            Log.d(TAG, "Storing user location: " + userLocation);
             UserLocationDao.getInstance().add(getContentResolver(), username, userLocation);
         }
 

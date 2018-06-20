@@ -2,6 +2,8 @@ package br.ufrn.dimap.dim0863.domain;
 
 import java.util.Date;
 
+import br.ufrn.dimap.dim0863.util.DateUtil;
+
 public class Location {
 
     private int id;
@@ -50,6 +52,11 @@ public class Location {
 
     public void setLon(double lon) {
         this.lon = lon;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s | Location = (%f, %f)", DateUtil.convertToString(date), lat, lon);
     }
 
 }

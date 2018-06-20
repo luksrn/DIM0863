@@ -2,6 +2,8 @@ package br.ufrn.dimap.dim0863.domain;
 
 import java.util.Date;
 
+import br.ufrn.dimap.dim0863.util.DateUtil;
+
 public class CarInfo {
 
     private int id;
@@ -61,4 +63,10 @@ public class CarInfo {
     public void setRpm(int rpm) {
         this.rpm = rpm;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s | Speed = %d | RPM = %d", DateUtil.convertToString(date), speed, rpm);
+    }
+
 }

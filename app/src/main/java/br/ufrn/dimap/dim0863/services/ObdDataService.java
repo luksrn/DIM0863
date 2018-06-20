@@ -24,13 +24,19 @@ import com.github.pires.obd.enums.ObdProtocols;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.UUID;
+
+import br.ufrn.dimap.dim0863.dao.CarInfoDao;
+import br.ufrn.dimap.dim0863.domain.CarInfo;
 
 
 public class ObdDataService extends Service {
 
+    private static final String TAG = "ObdDataService";
+
     public static final String OBD_MAC_ADDRESS_EXTRA = "OBD_MAC_ADDRESS_EXTRA";
-    private static final String OBD_SERVICE_TAG = "ObdDtService";
+    public static final String CAR_LICENSE_PLATE_EXTRA = "CAR_LICENSE_PLATE_EXTRA";
     private static final UUID BLUETOOTH_MODULE_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     public static final String MACBOOK_MAC_ADDRESS = "60:F8:1D:B4:B6:31";
@@ -42,23 +48,27 @@ public class ObdDataService extends Service {
     private ConnectedThread connectedThread;
     private boolean stopConnectedThread;
 
-    private String searchedObdAddress;
+    private String searchedOBDAddress;
+    private String authorizedCarLicensePlate;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(OBD_SERVICE_TAG, "Service created");
+        Log.d(TAG, "Service created");
         stopConnectedThread = false;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(OBD_SERVICE_TAG, "Service started");
+        Log.d(TAG, "Service started");
+        this.searchedOBDAddress = intent.getStringExtra(OBD_MAC_ADDRESS_EXTRA);
+        this.authorizedCarLicensePlate = intent.getStringExtra(CAR_LICENSE_PLATE_EXTRA);
 
-        this.searchedObdAddress = intent.getStringExtra(OBD_MAC_ADDRESS_EXTRA);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        checkBTState();
+        assertBluetoothState();
+        findBluetoothDevices();
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -73,7 +83,7 @@ public class ObdDataService extends Service {
         if (connectingThread != null) {
             connectingThread.closeSocket();
         }
-        Log.d(OBD_SERVICE_TAG, "onDestroy");
+        Log.d(TAG, "onDestroy");
     }
 
     @Nullable
@@ -83,23 +93,22 @@ public class ObdDataService extends Service {
     }
 
     //Checks that the Android device Bluetooth is available and prompts to be turned on if off
-    private void checkBTState() {
+    private void assertBluetoothState() {
         if (this.bluetoothAdapter == null) {
-            Toast.makeText(this, "Bluetooth não suportado pelo dispositivo.",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Bluetooth não suportado pelo dispositivo.", Toast.LENGTH_LONG).show();
             stopSelf();
         } else {
             if (bluetoothAdapter.isEnabled()) {
-                Log.d(OBD_SERVICE_TAG, "Bluetooth enabled!");
-                findBluetoothDevices();
+                Log.d(TAG, "Bluetooth enabled!");
             } else {
-                Log.d(OBD_SERVICE_TAG, "Bluetooth not ON. Stopping service");
-                stopSelf();
+                Log.d(TAG, "Bluetooth not ON. Enabling Bluetooth");
+                this.bluetoothAdapter.enable();
             }
         }
     }
 
     private void findBluetoothDevices() {
+        Log.d(TAG, "Starting bluetooth devices search");
         if(bluetoothAdapter.isDiscovering()) {
             bluetoothAdapter.cancelDiscovery();
         }
@@ -122,7 +131,7 @@ public class ObdDataService extends Service {
             this.device = device;
 
             BluetoothSocket temp = null;
-            Log.d(OBD_SERVICE_CONNECTING_TAG, "OBD MAC address: " + searchedObdAddress);
+            Log.d(OBD_SERVICE_CONNECTING_TAG, "OBD MAC address: " + searchedOBDAddress);
             Log.d(OBD_SERVICE_CONNECTING_TAG, "Bluetooth UUID: " + BLUETOOTH_MODULE_UUID);
 
             try {
@@ -190,6 +199,8 @@ public class ObdDataService extends Service {
 
         private static final String OBD_SERVICE_CONNECTED_TAG = "ObdDtServiceConnected";
 
+        private static final long OBD_READING_INTERVAL_MILLIS = 2000;
+
         private final InputStream inputStream;
         private final OutputStream outputStream;
 
@@ -236,9 +247,13 @@ public class ObdDataService extends Service {
                     RPMCommand rpmCommand = new RPMCommand();
                     rpmCommand.run(inputStream, outputStream);
 
-                    Log.d(OBD_SERVICE_CONNECTED_TAG, "Speed: " + speedCommand.getFormattedResult() + ", RPM: " + rpmCommand.getFormattedResult());
+                    int speed = Integer.valueOf(speedCommand.getCalculatedResult());
+                    int rpm = Integer.valueOf(rpmCommand.getCalculatedResult());
 
-                    Thread.sleep(1000);
+                    CarInfo carInfo = new CarInfo(new Date(), authorizedCarLicensePlate, speed, rpm);
+                    storeCarInfo(carInfo);
+
+                    Thread.sleep(OBD_READING_INTERVAL_MILLIS);
                 } catch (IOException | InterruptedException e) {
                     Log.d(OBD_SERVICE_CONNECTED_TAG, e.toString());
                     Log.d(OBD_SERVICE_CONNECTED_TAG, "Unable to read/write. Stopping service");
@@ -246,6 +261,11 @@ public class ObdDataService extends Service {
                     break;
                 }
             }
+        }
+
+        private void storeCarInfo(CarInfo carInfo) {
+            Log.d(TAG, "Storing car info: " + carInfo);
+            CarInfoDao.getInstance().add(getContentResolver(), carInfo);
         }
 
         void closeStreams() {
@@ -332,16 +352,16 @@ public class ObdDataService extends Service {
     };
 
     private final BroadcastReceiver broadcastReceiverBluetoothFindDevices = new BroadcastReceiver() {
+        @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
             if (action != null && action.equals(BluetoothDevice.ACTION_FOUND)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                Log.d(OBD_SERVICE_TAG, "Found a device: " + device.getName() + " - " + device.getAddress());
+                Log.d(TAG, "Found a device: " + device.getName() + " - " + device.getAddress());
 
-                if (device.getAddress() != null && device.getAddress().equals(searchedObdAddress)) {
-                    Log.d(OBD_SERVICE_TAG, "Searched device found.");
-                    Log.d(OBD_SERVICE_TAG, "Attempting to connect to remote device: " + searchedObdAddress);
+                if (device.getAddress() != null && device.getAddress().equals(searchedOBDAddress)) {
+                    Log.d(TAG, "Searched device found. Attempting to connect to remote device: " + searchedOBDAddress);
                     connectingThread = new ConnectingThread(device);
                     connectingThread.start();
 

@@ -32,6 +32,9 @@ public class CollectDataBroadcastReceiver extends BroadcastReceiver {
                 Intent startObdServiceIntent = new Intent(context, ObdDataService.class);
                 //TODO Store OBD devices addresses on database and use dynamically desired address to connect
                 startObdServiceIntent.putExtra(ObdDataService.OBD_MAC_ADDRESS_EXTRA, ObdDataService.MACBOOK_MAC_ADDRESS);
+                //TODO Get license plate of authorized car
+                startObdServiceIntent.putExtra(ObdDataService.CAR_LICENSE_PLATE_EXTRA, "ABC-1234");
+
                 if(!ServiceTools.isServiceRunning(context, ObdDataService.class)) {
                     context.startService(startObdServiceIntent);
                 }
