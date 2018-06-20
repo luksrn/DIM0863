@@ -74,6 +74,14 @@ public class LoginActivity extends AppCompatActivity {
         requestLocationPermissions();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        final EditText etUsername = findViewById(R.id.login_username);
+        etUsername.setText("luksrn");
+    }
+
     private void requestLocationPermissions() {
         if ((ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                 || (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
