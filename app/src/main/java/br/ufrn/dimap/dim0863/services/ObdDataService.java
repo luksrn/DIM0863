@@ -77,6 +77,12 @@ public class ObdDataService extends Service {
         super.onDestroy();
         stopConnectedThread = true;
 
+        try {
+            unregisterReceiver(broadcastReceiverBluetoothFindDevices);
+        } catch(IllegalArgumentException e) {
+            Log.i(TAG, "BroadcastReceiver already unregistered.");
+        }
+
         if (connectedThread != null) {
             connectedThread.closeStreams();
         }
