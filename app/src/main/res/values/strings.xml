@@ -20,4 +20,6 @@
     <string name="btn_list_car_info">Listar Informações</string>
     <string name="car_info">Informações de Veículos</string>
     <string name="btn_car_info">Informações de Veículos</string>
+    <string name="btn_start_services">Iniciar Serviços</string>
+    <string name="btn_stop_services">Parar Serviços</string>
 </resources>

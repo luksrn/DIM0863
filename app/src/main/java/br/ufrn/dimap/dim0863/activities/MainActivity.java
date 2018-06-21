@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import br.ufrn.dimap.dim0863.R;
+import br.ufrn.dimap.dim0863.receivers.CollectDataBroadcastReceiver;
 import br.ufrn.dimap.dim0863.util.RequestManager;
 import br.ufrn.dimap.dim0863.util.Session;
 
@@ -62,6 +63,24 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CarInfoActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        Button btnStartServices = findViewById(R.id.btn_start_services);
+        btnStartServices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CollectDataBroadcastReceiver.START_COLLECT_REQUESTED);
+                sendBroadcast(intent);
+            }
+        });
+
+        Button btnStopServices = findViewById(R.id.btn_stop_services);
+        btnStopServices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CollectDataBroadcastReceiver.STOP_COLLECT_REQUESTED);
+                sendBroadcast(intent);
             }
         });
     }

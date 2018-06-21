@@ -26,6 +26,18 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_car_info" />
 
+        <Button
+            android:id="@+id/btn_start_services"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_start_services" />
+
+        <Button
+            android:id="@+id/btn_stop_services"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_stop_services" />
+
         <TextView
             android:id="@+id/log_operacoes"
             android:layout_width="match_parent"
