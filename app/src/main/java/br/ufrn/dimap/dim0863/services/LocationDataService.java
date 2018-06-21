@@ -33,7 +33,6 @@ public class LocationDataService extends Service {
 
         @Override
         public void onLocationChanged(android.location.Location location) {
-            Log.d(TAG, String.format("onLocationChanged: (%f, %f)", location.getLatitude(), location.getLongitude()));
             lastLocation.set(location);
             storeUserLocation(location);
         }

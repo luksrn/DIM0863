@@ -72,8 +72,7 @@ public class BluetoothActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent serviceIntent = new Intent(BluetoothActivity.this, ObdDataService.class);
                 //TODO Store OBD devices addresses on database and use dynamically desired address to connect
-//                serviceIntent.putExtra(ObdDataService.OBD_MAC_ADDRESS_EXTRA, ObdDataService.OBD_MAC_ADDRESS);
-                serviceIntent.putExtra(ObdDataService.OBD_MAC_ADDRESS_EXTRA, ObdDataService.MACBOOK_MAC_ADDRESS);
+                serviceIntent.putExtra(ObdDataService.OBD_MAC_ADDRESS_EXTRA, ObdDataService.OBD_MAC_ADDRESS);
 
                 if(!ServiceTools.isServiceRunning(BluetoothActivity.this, ObdDataService.class)) {
                     startService(serviceIntent);
