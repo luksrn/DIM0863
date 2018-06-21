@@ -64,7 +64,7 @@ public class UserLocationDao {
                     String strDate = cursor.getString(cursor.getColumnIndexOrThrow(UserLocationContentProvider.DATE));
                     Date date = DateUtil.convertFromString(strDate);
                     double lat = cursor.getDouble(cursor.getColumnIndexOrThrow(UserLocationContentProvider.LAT));
-                    double lon = cursor.getInt(cursor.getColumnIndexOrThrow(UserLocationContentProvider.LON));
+                    double lon = cursor.getDouble(cursor.getColumnIndexOrThrow(UserLocationContentProvider.LON));
 
                     Location location = new Location(_id, date, lat, lon);
                     tempLocationList.add(location);
