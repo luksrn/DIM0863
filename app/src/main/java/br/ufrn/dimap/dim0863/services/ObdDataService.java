@@ -20,6 +20,7 @@ import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
 import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
 import com.github.pires.obd.commands.protocol.TimeoutCommand;
 import com.github.pires.obd.enums.ObdProtocols;
+import com.github.pires.obd.exceptions.NonNumericResponseException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -253,16 +254,19 @@ public class ObdDataService extends Service {
                     RPMCommand rpmCommand = new RPMCommand();
                     rpmCommand.run(inputStream, outputStream);
 
-                    int speed = Integer.valueOf(speedCommand.getCalculatedResult());
-                    int rpm = Integer.valueOf(rpmCommand.getCalculatedResult());
+                    int speed = speedCommand.getMetricSpeed();
+                    int rpm = rpmCommand.getRPM();
 
                     CarInfo carInfo = new CarInfo(new Date(), authorizedCarLicensePlate, speed, rpm);
                     storeCarInfo(carInfo);
 
                     Thread.sleep(OBD_READING_INTERVAL_MILLIS);
+                } catch (NonNumericResponseException e) {
+                    Log.e(OBD_SERVICE_CONNECTED_TAG, "Couldn't read non numeric response");
+                    Log.e(OBD_SERVICE_CONNECTED_TAG, e.toString());
                 } catch (IOException | InterruptedException e) {
-                    Log.d(OBD_SERVICE_CONNECTED_TAG, e.toString());
-                    Log.d(OBD_SERVICE_CONNECTED_TAG, "Unable to read/write. Stopping service");
+                    Log.e(OBD_SERVICE_CONNECTED_TAG, "Unable to read/write. Stopping service");
+                    Log.e(OBD_SERVICE_CONNECTED_TAG, e.toString());
                     stopSelf();
                     break;
                 }
