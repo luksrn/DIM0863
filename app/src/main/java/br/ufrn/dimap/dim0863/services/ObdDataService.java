@@ -17,6 +17,7 @@ import com.github.pires.obd.commands.SpeedCommand;
 import com.github.pires.obd.commands.engine.RPMCommand;
 import com.github.pires.obd.commands.protocol.EchoOffCommand;
 import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
+import com.github.pires.obd.commands.protocol.ObdResetCommand;
 import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
 import com.github.pires.obd.commands.protocol.TimeoutCommand;
 import com.github.pires.obd.enums.ObdProtocols;
@@ -234,12 +235,18 @@ public class ObdDataService extends Service {
             Log.d(OBD_SERVICE_CONNECTED_TAG, "In ConnectedThread run");
 
             try {
+                Log.d(OBD_SERVICE_CONNECTED_TAG, "OBD Reset");
+                new ObdResetCommand().run(inputStream, outputStream);
+
                 Log.d(OBD_SERVICE_CONNECTED_TAG, "Echo Off");
                 new EchoOffCommand().run(inputStream, outputStream);
+
                 Log.d(OBD_SERVICE_CONNECTED_TAG, "Line Feed Off");
                 new LineFeedOffCommand().run(inputStream, outputStream);
+
                 Log.d(OBD_SERVICE_CONNECTED_TAG, "Timeout Off");
                 new TimeoutCommand(125).run(inputStream, outputStream);
+
                 Log.d(OBD_SERVICE_CONNECTED_TAG, "Select Protocol");
                 new SelectProtocolCommand(ObdProtocols.AUTO).run(inputStream, outputStream);
             } catch (IOException | InterruptedException e) {
