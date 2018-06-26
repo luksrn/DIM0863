@@ -53,6 +53,11 @@
             android:label="@string/car_info">
         </activity>
 
+        <activity
+            android:name=".activities.UserLocationActivity"
+            android:label="@string/user_location">
+        </activity>
+
         <service
             android:name=".services.LocationDataService"
             android:process=":location_data_service" />

@@ -27,6 +27,12 @@
             android:text="@string/btn_car_info" />
 
         <Button
+            android:id="@+id/btn_user_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_user_location" />
+
+        <Button
             android:id="@+id/btn_start_services"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
