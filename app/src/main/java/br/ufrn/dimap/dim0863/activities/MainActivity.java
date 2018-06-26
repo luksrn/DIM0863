@@ -3,6 +3,7 @@ package br.ufrn.dimap.dim0863.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -32,13 +33,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnReadQRCode = findViewById(R.id.btn_read_qrcode);
+        FloatingActionButton btnReadQRCode = findViewById(R.id.btn_read_qrcode);
 
         btnReadQRCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 IntentIntegrator scanIntegrator = new IntentIntegrator(MainActivity.this);
-                scanIntegrator.setPrompt("Scan");
+                scanIntegrator.setPrompt("Escanear chaveiro");
                 scanIntegrator.setBeepEnabled(false);
                 scanIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);  //If you want QR code
                 scanIntegrator.setCaptureActivity(CaptureActivity.class);
